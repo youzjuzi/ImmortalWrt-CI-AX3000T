@@ -111,3 +111,18 @@ UPDATE_VERSION() {
 #UPDATE_VERSION "软件包名" "测试版，true，可选，默认为否"
 #UPDATE_VERSION "sing-box"
 #UPDATE_VERSION "tailscale"
+
+# OpenClash
+UPDATE_PACKAGE "openclash" "vernesong/OpenClash" "master" "pkg"
+
+# 将 Mihomo ARM64 Core 直接打包进固件
+mkdir -p /tmp/openclash-core
+curl -fL --retry 5 \
+  "https://raw.githubusercontent.com/vernesong/OpenClash/core/master/meta/clash-linux-arm64.tar.gz" \
+  -o /tmp/clash-linux-arm64.tar.gz
+
+tar -xzf /tmp/clash-linux-arm64.tar.gz -C /tmp/openclash-core
+
+mkdir -p ../files/etc/openclash/core
+CORE_FILE="$(find /tmp/openclash-core -type f | head -n 1)"
+install -m 0755 "$CORE_FILE" ../files/etc/openclash/core/clash_meta
